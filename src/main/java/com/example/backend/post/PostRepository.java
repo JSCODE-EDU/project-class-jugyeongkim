@@ -1,2 +1,6 @@
-package com.example.backend.post;public interface PostRepository {
+package com.example.backend.post;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PostRepository extends JpaRepository<Post,Long> {
 }

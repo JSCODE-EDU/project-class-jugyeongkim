@@ -1,6 +1,10 @@
 package com.example.backend.post;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -41,4 +45,11 @@ public class PostController {
         postService.deleteById(id);
         return "삭제하였습니다";
     }
+
+    @GetMapping(value="search",params="keyword")
+    public List<Post> search(@RequestParam String keyword){
+        return postService.search(keyword);
+    }
+
+
 }

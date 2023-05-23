@@ -1,8 +1,10 @@
 package com.example.backend.post;
 
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +23,13 @@ public class PostService {
     }
 
     public List<Post> findAll() {
-        return postRepository.findAll();
+        Pageable pageable= PageRequest.of(0,100);
+        Page<Post> pages=postRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        if (!pages.hasNext()){
+            pages=new PageImpl<>(pages.getContent());
+        }
+        return pages.getContent();
     }
 
 
@@ -38,7 +46,17 @@ public class PostService {
 
     public void deleteById(Long id) {
         postRepository.deleteById(id);
+        
     }
 
 
+    public List<Post> search(String keyword) {
+        Pageable pageable= PageRequest.of(0,100);
+        Page<Post> pages=postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword,pageable);
+
+        if (!pages.hasNext()){
+            pages=new PageImpl<>(pages.getContent());
+        }
+        return pages.getContent();
+    }
 }

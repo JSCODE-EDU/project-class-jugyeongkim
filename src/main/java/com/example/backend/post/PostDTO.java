@@ -1,15 +1,18 @@
 package com.example.backend.post;
 
-import com.sun.istack.NotNull;
+import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.NotFound;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
 public class PostDTO {
 
+
     private final String title;
+
 
     private final String content;
 

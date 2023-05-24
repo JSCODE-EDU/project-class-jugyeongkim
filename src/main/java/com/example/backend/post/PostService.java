@@ -17,9 +17,11 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Post save(Post post) {
-        postRepository.save(post);
-        return post;
+    public Post save(PostDTO postDTO) {
+        //작성
+        Post newPost=new Post(postDTO.getTitle(), postDTO.getContent());
+        return postRepository.save(newPost);
+
     }
 
     public List<Post> findAll() {
@@ -29,12 +31,13 @@ public class PostService {
 
 
     public Optional<Post> findById(Long id) {
-        Post newpost=postRepository.findById(id).
-                orElseThrow(()->new IllegalArgumentException("글이 존재하지 않습니다."));
-        return Optional.of(newpost);
+        //Post newpost=postRepository.findById(id).
+        //        orElseThrow(()->new IllegalArgumentException("글이 존재하지 않습니다."));
+        return postRepository.findById(id);
     }
     @Transactional
     public Optional<Post> edit(Long id, PostDTO postDTO) {
+        //수정
         Post newpost=postRepository.findById(id).
                 orElseThrow(()->new IllegalArgumentException("글이 존재하지 않습니다."));
         newpost.edit(postDTO.getTitle(),postDTO.getContent());

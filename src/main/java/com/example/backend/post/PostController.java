@@ -1,11 +1,8 @@
 package com.example.backend.post;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.Errors;
 
-
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +16,8 @@ public class PostController {
     }
 
     @PostMapping("")
-    public Post save(@RequestBody PostDTO postdto){
+    public Post save(@Valid @RequestBody PostDTO postdto, Errors errors){
+        //if (errors.hasErrors())
         return postService.save(postdto);
 
     }

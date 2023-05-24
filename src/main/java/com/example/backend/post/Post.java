@@ -31,7 +31,7 @@ public class Post {
     @Column(updatable = false,nullable=false)
     @JsonProperty(value="createdAt")
     private LocalDateTime createdAt;
-
+    @Builder
     public Post(String title, String content) {
         this.title = title;
         this.content = content;

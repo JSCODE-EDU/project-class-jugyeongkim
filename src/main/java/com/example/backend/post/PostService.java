@@ -3,7 +3,9 @@ package com.example.backend.post;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +21,7 @@ public class PostService {
 
     public Post save(PostDTO postDTO) {
         //작성
-        Post newPost=new Post(postDTO.getTitle(), postDTO.getContent());
+        Post newPost=postDTO.toEntity();
         return postRepository.save(newPost);
 
     }

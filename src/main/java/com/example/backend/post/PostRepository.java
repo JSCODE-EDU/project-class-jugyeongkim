@@ -5,10 +5,14 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 
 
 public interface PostRepository extends JpaRepository<Post,Long> {
-    Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    Page<Post> findByTitleContainingOrderByCreatedAtDesc(String keyword, Pageable pageable);
+
+
+    List<Post> findTop100ByTitleContainingOrderByCreatedAtDesc(String keyword);
+
+    List<Post> findTop100ByOrderByCreatedAtDesc();
 }

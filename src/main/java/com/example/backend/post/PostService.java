@@ -23,18 +23,15 @@ public class PostService {
     }
 
     public List<Post> findAll() {
-        Pageable pageable= PageRequest.of(0,100);
-        Page<Post> pages=postRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        if (!pages.hasNext()){
-            pages=new PageImpl<>(pages.getContent());
-        }
-        return pages.getContent();
+        return postRepository.findTop100ByOrderByCreatedAtDesc();
     }
 
 
     public Optional<Post> findById(Long id) {
-        return postRepository.findById(id);
+        Post newpost=postRepository.findById(id).
+                orElseThrow(()->new IllegalArgumentException("글이 존재하지 않습니다."));
+        return Optional.of(newpost);
     }
     @Transactional
     public Optional<Post> edit(Long id, PostDTO postDTO) {
@@ -45,18 +42,14 @@ public class PostService {
     }
 
     public void deleteById(Long id) {
+        postRepository.findById(id).
+                orElseThrow(()->new IllegalArgumentException("글이 존재하지 않습니다."));
         postRepository.deleteById(id);
         
     }
 
 
     public List<Post> search(String keyword) {
-        Pageable pageable= PageRequest.of(0,100);
-        Page<Post> pages=postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword,pageable);
-
-        if (!pages.hasNext()){
-            pages=new PageImpl<>(pages.getContent());
-        }
-        return pages.getContent();
+        return postRepository.findTop100ByTitleContainingOrderByCreatedAtDesc(keyword);
     }
 }

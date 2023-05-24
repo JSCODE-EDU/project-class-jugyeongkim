@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 public class PostDTO {
 
     @NotBlank(message = "제목은 필수 입력 값입니다.")
-    @Size(min=1,max=15)
+    @Size(min=1,max=15, message = "제목의 길이는 1이상 15이하 입니다.")
     private final String title;
 
     @NotBlank(message="내용은 필수 입력 값입니다.")
-    @Size(min=1,max=1000)
+    @Size(min=1,max=1000,message = "내용의 길이는 1이상 1000이하 입니다.")
     private final String content;
 
     private final LocalDateTime createdAt;

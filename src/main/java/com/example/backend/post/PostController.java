@@ -1,10 +1,19 @@
 package com.example.backend.post;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.Errors;
+
 
 import javax.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+
 
 @RequestMapping("api/posts")
 @RestController
@@ -16,10 +25,14 @@ public class PostController {
     }
 
     @PostMapping("")
-    public Post save(@Valid @RequestBody PostDTO postdto, Errors errors){
-        //if (errors.hasErrors())
-        return postService.save(postdto);
+    public ResponseEntity<Object> save(@Valid @RequestBody PostDTO postdto, BindingResult bindingResult){
+        ResponseEntity<Object> errorResponse = handleBindingErrors(bindingResult);
+        if (errorResponse != null) {
+            return errorResponse;
+        }
 
+        Post post=postService.save(postdto);
+        return ResponseEntity.ok(post);
     }
     @GetMapping("")
     public List<Post> findAll(){
@@ -27,26 +40,61 @@ public class PostController {
     }
 
     @GetMapping(value="",params="id")
-    public Optional<Post> findById(@RequestParam Long id){
-        return postService.findById(id);
+    public ResponseEntity<Object> findById(@RequestParam Long id){
+        Optional<Post> post=postService.findById(id);
+        if (post.isEmpty()){
+            String errorMessage="해당 id의 게시글이 존재하지 않습니다.";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+        }
+        return ResponseEntity.ok(post.get());
     }
 
     @PutMapping(value="edit",params="id")
-    public Optional<Post> edit(@RequestParam Long id, @RequestBody PostDTO postDTO)
+    public ResponseEntity<Object> edit(@RequestParam Long id, @Valid @RequestBody PostDTO postDTO,BindingResult bindingResult)
     {
-        return postService.edit(id, postDTO);
+        ResponseEntity<Object> errorResponse = handleBindingErrors(bindingResult);
+        if (errorResponse != null) {
+            return errorResponse;
+        }
+
+        Optional<Post> post = postService.edit(id, postDTO);
+        return ResponseEntity.ok(post);
     }
 
+
+
     @DeleteMapping(value="delete",params="id")
-    public String delete(@RequestParam Long id){
+    public ResponseEntity<Object> delete(@RequestParam Long id){
+        Optional<Post> post=postService.findById(id);
+        if (post.isEmpty()){
+            String errorMessage="해당 id의 게시글이 존재하지 않습니다.";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+        }
         postService.deleteById(id);
-        return "삭제하였습니다";
+        return ResponseEntity.ok("삭제되었습니다.");
     }
 
     @GetMapping(value="search",params="keyword")
-    public List<Post> search(@RequestParam String keyword){
-        return postService.search(keyword);
+    public ResponseEntity<Object> search(@RequestParam String keyword){
+        String newkeyword = keyword.replaceAll(" ", "");
+        System.out.print(newkeyword.length());
+        System.out.print(newkeyword);
+        if (newkeyword.length()<1) {
+            String errorMessage="검색 키워드는 공백을 제외한 1글자 이상이어야 한다.";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+        }
+        List<Post> posts=postService.search(keyword);
+        return ResponseEntity.ok(posts);
     }
 
-
+    private ResponseEntity<Object> handleBindingErrors(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+        return null;
+    }
 }

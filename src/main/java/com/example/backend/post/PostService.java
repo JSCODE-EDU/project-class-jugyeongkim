@@ -1,12 +1,9 @@
 package com.example.backend.post;
 
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +30,9 @@ public class PostService {
 
 
     public Optional<Post> findById(Long id) {
-        //Post newpost=postRepository.findById(id).
-        //        orElseThrow(()->new IllegalArgumentException("글이 존재하지 않습니다."));
-        return postRepository.findById(id);
+        Optional<Post> newpost=postRepository.findById(id);
+
+        return newpost;
     }
     @Transactional
     public Optional<Post> edit(Long id, PostDTO postDTO) {

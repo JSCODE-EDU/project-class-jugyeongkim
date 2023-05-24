@@ -39,7 +39,7 @@ public class PostController {
         return postService.findAll();
     }
 
-    @GetMapping(value="",params="id")
+    @GetMapping(value="find",params="id")
     public ResponseEntity<Object> findById(@RequestParam Long id){
         Optional<Post> post=postService.findById(id);
         if (post.isEmpty()){
@@ -49,7 +49,7 @@ public class PostController {
         return ResponseEntity.ok(post.get());
     }
 
-    @PutMapping(value="edit",params="id")
+    @PutMapping(value="",params="id")
     public ResponseEntity<Object> edit(@RequestParam Long id, @Valid @RequestBody PostDTO postDTO,BindingResult bindingResult)
     {
         ResponseEntity<Object> errorResponse = handleBindingErrors(bindingResult);
@@ -63,7 +63,7 @@ public class PostController {
 
 
 
-    @DeleteMapping(value="delete",params="id")
+    @DeleteMapping(value="",params="id")
     public ResponseEntity<Object> delete(@RequestParam Long id){
         Optional<Post> post=postService.findById(id);
         if (post.isEmpty()){

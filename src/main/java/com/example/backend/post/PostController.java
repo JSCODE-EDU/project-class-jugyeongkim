@@ -77,8 +77,6 @@ public class PostController {
     @GetMapping(value="search",params="keyword")
     public ResponseEntity<Object> search(@RequestParam String keyword){
         String newkeyword = keyword.replaceAll(" ", "");
-        System.out.print(newkeyword.length());
-        System.out.print(newkeyword);
         if (newkeyword.length()<1) {
             String errorMessage="검색 키워드는 공백을 제외한 1글자 이상이어야 한다.";
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
